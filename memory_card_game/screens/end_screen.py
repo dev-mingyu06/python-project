@@ -15,13 +15,20 @@ def end_screen(screen, clock, result, playtime):
     while True:
         screen.blit(background, (0, 0))
 
-        msg = "CLEAR!" if result == "win" else "FAIL.."
-        title_text = font_large.render(msg, True, (255, 255, 255))
-        screen.blit(title_text, ((SCREEN_WIDTH - title_text.get_width()) // 2, 150))
 
-        time_text = font_small.render(f"CLEAR TIME: {playtime}sec", True, (255, 255, 0))
-        screen.blit(time_text, ((SCREEN_WIDTH - time_text.get_width()) // 2, 220))
+        if result == "win":
+            msg = "CLEAR!" 
+            title_text = font_large.render(msg, True, (255, 255, 255))
+            screen.blit(title_text, ((SCREEN_WIDTH - title_text.get_width()) // 2, 150))
 
+            time_text = font_small.render(f"CLEAR TIME: {playtime}sec", True, (255, 255, 0))
+            screen.blit(time_text, ((SCREEN_WIDTH - time_text.get_width()) // 2, 220))
+            
+        elif result == "fail":
+            msg = "FAIL.."
+            title_text = font_large.render(msg, True, (255, 255, 255))
+            screen.blit(title_text, ((SCREEN_WIDTH - title_text.get_width()) // 2, 150))
+            
         for i, item in enumerate(end_menu):
             color = (255, 0, 0) if i == selected else (255, 255, 255)
             text = font_small.render(item, True, color)
