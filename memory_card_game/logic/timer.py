@@ -10,3 +10,6 @@ class Timer:
 
     def is_time_up(self):
         return self.time_left() <= 0
+    
+    def elapsed_time(self):
+        return int(time.time() - self.start_time)

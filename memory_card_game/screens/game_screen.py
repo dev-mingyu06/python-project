@@ -1,6 +1,4 @@
-import pygame
-import random
-import sys
+import pygame, random
 from settings.config import *
 from logic.card import Card
 from logic.matcher import Matcher
@@ -15,18 +13,18 @@ def load_images():
     back_img = pygame.image.load("assets/images/card_back.png")
     return images, back_img
 
-def create_cards(front_imgs, back_img):
-    all_imgs = front_imgs * 2
-    ids = list(range(1, 16)) * 2
+def create_cards(front_imgs, back_img, pair_count, grid_cols, grid_rows):
+    all_imgs = front_imgs[:pair_count] * 2
+    ids = list(range(1, pair_count + 1)) * 2
     combined = list(zip(all_imgs, ids))
     random.shuffle(combined)
 
     cards = []
-    start_x = (SCREEN_WIDTH - (CARD_SIZE[0] + CARD_MARGIN) * GRID_COLS) // 2
+    start_x = (SCREEN_WIDTH - (CARD_SIZE[0] + CARD_MARGIN) * grid_cols) // 2
     start_y = 80
-    for i in range(GRID_ROWS):
-        for j in range(GRID_COLS):
-            idx = i * GRID_COLS + j
+    for i in range(grid_rows):
+        for j in range(grid_cols):
+            idx = i * grid_cols + j
             img, cid = combined[idx]
             x = start_x + j * (CARD_SIZE[0] + CARD_MARGIN)
             y = start_y + i * (CARD_SIZE[1] + CARD_MARGIN)
@@ -34,10 +32,11 @@ def create_cards(front_imgs, back_img):
             cards.append(Card(resized, back_img, cid, (x, y)))
     return cards
 
-def game_screen(screen, clock):
+def game_screen(screen, clock, difficulty):
     front_imgs, back_img = load_images()
     back_img = pygame.transform.scale(back_img, CARD_SIZE)
-    cards = create_cards(front_imgs, back_img)
+    grid_cols, grid_rows, pair_count = GRID_CONFIG[difficulty]
+    cards = create_cards(front_imgs, back_img, pair_count, grid_cols, grid_rows)
     matcher = Matcher()
     timer = Timer(TIME_LIMIT)
 
@@ -49,40 +48,32 @@ def game_screen(screen, clock):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if not matcher.locked:
                     for card in cards:
                         if card.is_clicked(event.pos):
                             matcher.select(card)
-        
+
         matcher.update()
-        
-        for card in cards:
-            card.draw(screen)
 
         for card in cards:
             card.draw(screen)
 
         font = pygame.font.SysFont(None, 36)
-        time_text = font.render(f"time: {timer.time_left()}sec", True, (255, 255, 255))
+        time_text = font.render(f"TIME: {timer.time_left()}sec", True, (255, 255, 255))
         screen.blit(time_text, (20, 20))
 
         if all(card.matched for card in cards):
-            print("클리어!")
             pygame.time.delay(1000)
-            result = end_screen(screen, clock, result="win")
+            result = end_screen(screen, clock, "win", timer.elapsed_time())
             return result
 
         if timer.is_time_up():
-            print("실패")
             pygame.time.delay(1000)
-            result = end_screen(screen, clock, result="fail")
+            result = end_screen(screen, clock, "fail", timer.elapsed_time())
             return result
 
         pygame.display.flip()

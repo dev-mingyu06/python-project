@@ -4,35 +4,28 @@ from settings.config import *
 
 end_menu = ["RESTART", "MAIN MENU", "EXIT"]
 
-def end_screen(screen, clock, result="win"):
+def end_screen(screen, clock, result, playtime):
     pygame.font.init()
     selected = 0
     font_large = pygame.font.SysFont(None, 55)
     font_small = pygame.font.SysFont(None, 35)
-
-    # 배경 이미지 불러오기
-    if result =="win":
-        title_msg = "CLEAR!! PLAY AGAIN?"
-        bg_path = "C:/Users/chlal/Desktop/상명 25-1/파이썬프로그래밍/memory_card_game/python-project/memory_card_game/assets/images/clear.png"
-    else:
-        title_msg = "FAIL... RESTART?"
-        bg_path = "C:/Users/chlal/Desktop/상명 25-1/파이썬프로그래밍/memory_card_game/python-project/memory_card_game/assets/images/fail.png"
-        
-    background = pygame.image.load(bg_path)
-    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background.fill((70, 70, 70))
 
     while True:
         screen.blit(background, (0, 0))
 
-        # 제목
-        title_text = font_large.render(title_msg, True, (0, 0, 0))
+        msg = "CLEAR!" if result == "win" else "FAIL.."
+        title_text = font_large.render(msg, True, (255, 255, 255))
         screen.blit(title_text, ((SCREEN_WIDTH - title_text.get_width()) // 2, 150))
 
-        # 메뉴
+        time_text = font_small.render(f"CLEAR TIME: {playtime}sec", True, (255, 255, 0))
+        screen.blit(time_text, ((SCREEN_WIDTH - time_text.get_width()) // 2, 220))
+
         for i, item in enumerate(end_menu):
-            color = (255, 0, 0) if i == selected else (0, 0, 0)
+            color = (255, 0, 0) if i == selected else (255, 255, 255)
             text = font_small.render(item, True, color)
-            screen.blit(text, ((SCREEN_WIDTH - text.get_width()) // 2, 250 + i * 60))
+            screen.blit(text, ((SCREEN_WIDTH - text.get_width()) // 2, 300 + i * 60))
 
         pygame.display.flip()
 

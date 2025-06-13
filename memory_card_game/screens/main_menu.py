@@ -2,13 +2,13 @@ import pygame
 import sys
 from settings.config import *
 
-menu = ["GAME START", "SETTING", "HOW TO PLAY", "EXIT"]
+menu = ["EASY MODE", "NORMAL MODE", "HARD MODE", "HOW TO PLAY", "EXIT"]
 
 def main_menu(screen, clock):
     font = pygame.font.SysFont(None, 50)
     selected_menu = 0
-    background = pygame.image.load("C:/Users/chlal/Desktop/상명 25-1/파이썬프로그래밍/memory_card_game/python-project/memory_card_game/assets/images/background.png")
-    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background.fill((0, 0, 50))
 
     while True:
         screen.blit(background, (0, 0))
@@ -29,13 +29,14 @@ def main_menu(screen, clock):
                     selected_menu = (selected_menu + 1) % len(menu)
                 elif event.key == pygame.K_RETURN:
                     selected = menu[selected_menu]
-                    print("선택된 항목:",selected)
-                    if selected == "GAME START":
-                        return "start"
+                    if selected == "EASY MODE":
+                        return "easy"
+                    elif selected == "NORMAL MODE":
+                        return "normal"
+                    elif selected == "HARD MODE":
+                        return "hard"
                     elif selected == "HOW TO PLAY":
                         return "howto"
-                    elif selected == "SETTING":
-                        return "settings"
                     elif selected == "EXIT":
                         pygame.quit()
                         sys.exit()

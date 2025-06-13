@@ -2,6 +2,7 @@ import pygame
 from settings.config import *
 from screens.main_menu import main_menu
 from screens.game_screen import game_screen
+from screens.howto_screen import howto_screen
 
 def main():
     pygame.init()
@@ -10,21 +11,22 @@ def main():
     clock = pygame.time.Clock()
 
     while True:
-        action = main_menu(screen, clock)
+        difficulty = main_menu(screen, clock)
 
-        if action == "start":
+        if difficulty in ["easy", "normal", "hard"]:
             while True:
-                result = game_screen(screen, clock)
+                result = game_screen(screen, clock, difficulty)
                 if result == "restart":
                     continue
                 elif result == "menu":
                     break
-        elif action == "howto":
-            print("게임 설명 준비 중!")
-        elif action == "settings":
-            print("설정화면 준비 중!")
+                
+        elif difficulty == "howto":
+            howto_screen(screen, clock)
+
         else:
-            break  # 종료
+            break
+    
 
     pygame.quit()
 
